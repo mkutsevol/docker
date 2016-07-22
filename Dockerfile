@@ -100,7 +100,6 @@ COPY plugins.sh /usr/local/bin/plugins.sh
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
 
 # install plst
-RUN echo PLST ver 0.1.0_dev
 USER root
 COPY src/* /root/src/
 RUN pip3 install --upgrade /root/src/plst.tgz
