@@ -1,19 +1,24 @@
 FROM ubuntu:xenial
 
-RUN apt-get update
-RUN apt-get install -y software-properties-common
+RUN apt-get update && apt-get -y dselect-upgrade && apt-get install -y --no-install-recommends software-properties-common apt-utils curl
 RUN add-apt-repository -y ppa:webupd8team/java
 RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+
+RUN apt-get update && apt-get install -y oracle-java8-installer git-lfs
 
 RUN apt-get update && apt-get install -y \
 	git \
 	curl \
 	zip \
-	oracle-java8-installer \
 	python3 \
 	python3-dev \
 	python3-pip \
 	python3-setuptools \
+	virtualenv \
+	libyaml-dev \
+	libffi-dev \
+	libssl-dev \
     sudo \
     wget \
 	curl \
@@ -21,6 +26,10 @@ RUN apt-get update && apt-get install -y \
 	netcat-traditional \
 	joe \
 	&& rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --upgrade pip
+
+RUN pip3 install numpy cython
 
 ENV JENKINS_HOME /var/jenkins_home
 ENV JENKINS_SLAVE_AGENT_PORT 50000

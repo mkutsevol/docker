@@ -1,9 +1,14 @@
-master:
+---
+jenkins:
+  restart: always
+  container_name: jenkins
+  dockerfile: Dockerfile
   build: .
   environment:
     JAVA_OPTS: "-Djava.awt.headless=true"
-  ports:
-    - "50000:50000"
-    - "8080:8080"
+    TERM: xterm
   volumes:
-    - /var/jenkins_home
+    - ./local:/var/jenkins_home
+  ports:
+    - "127.0.0.4:80:8080"
+    - "127.0.0.4:50000:50000"
