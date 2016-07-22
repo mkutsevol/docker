@@ -1,5 +1,5 @@
+# Ubuntu base and plst stuff
 FROM ubuntu:xenial
-
 RUN apt-get update && apt-get -y dselect-upgrade && apt-get install -y --no-install-recommends software-properties-common apt-utils curl
 RUN add-apt-repository -y ppa:webupd8team/java
 RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
@@ -23,13 +23,17 @@ RUN apt-get update && apt-get install -y \
     wget \
 	curl \
     axel \
+    pbzip2 \
+    tar \
 	netcat-traditional \
 	joe \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --upgrade pip
-
 RUN pip3 install numpy cython
+RUN echo "jenkins ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# ~ Ubuntu & PLST deps
 
 ENV JENKINS_HOME /var/jenkins_home
 ENV JENKINS_SLAVE_AGENT_PORT 50000
@@ -94,3 +98,12 @@ ENTRYPOINT ["/bin/tini", "--", "/usr/local/bin/jenkins.sh"]
 # from a derived Dockerfile, can use `RUN plugins.sh active.txt` to setup /usr/share/jenkins/ref/plugins from a support bundle
 COPY plugins.sh /usr/local/bin/plugins.sh
 COPY install-plugins.sh /usr/local/bin/install-plugins.sh
+
+# install plst
+RUN echo PLST ver 0.1.0_dev
+USER root
+COPY src/* /root/src/
+RUN pip3 install --upgrade /root/src/plst.tgz
+RUN pip3 install --upgrade /root/src/plst-remixer.tgz
+RUN rm -rf /root/src
+USER ${user}
