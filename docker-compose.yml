@@ -6,6 +6,7 @@ jenkins:
   build: .
   environment:
     JAVA_OPTS: "-Djava.awt.headless=true"
+    JENKINS_OPTS: "--prefix=/jenkins/"
     TERM: xterm
   volumes:
     - ./local:/var/jenkins_home
